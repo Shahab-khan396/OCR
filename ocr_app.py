@@ -16,11 +16,15 @@ import re
 import unicodedata
 import shutil
 from pdf2image import convert_from_bytes
+import base64
 
-# ╔══════════════════════════════════════════════════════════════╗
-# ║        PATH CONFIGURATION & AUTO-DETECTION                   ║
-# ║  Supports Streamlit Cloud (Linux), Docker, macOS & Windows   ║
-# ╚══════════════════════════════════════════════════════════════╝
+def get_base64_image(image_path: str) -> str:
+    """Read an image from disk and return its base64 data URI."""
+    if os.path.exists(image_path):
+        with open(image_path, "rb") as f:
+            b64 = base64.b64encode(f.read()).decode()
+            return f"data:image/png;base64,{b64}"
+    return ""
 
 def detect_tesseract_binary():
     """Detect Tesseract executable across Linux, macOS, and Windows."""
