@@ -260,7 +260,7 @@ html, body, [class*="css"] {
 }
 
 .block-container {
-    padding-top: 0 !important;
+    padding-top: 0.5rem !important;
     padding-bottom: 2rem !important;
     max-width: 1440px !important;
     margin: 0 auto !important;
@@ -270,14 +270,11 @@ html, body, [class*="css"] {
 .app-top-header {
     background: #ffffff;
     border-bottom: 1px solid var(--border-card);
-    padding: 14px 24px;
-    margin: 0 -1.5rem 1.25rem -1.5rem;
+    padding: 12px 24px;
+    margin: -0.5rem -1.5rem 1.25rem -1.5rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 99;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
@@ -326,13 +323,16 @@ html, body, [class*="css"] {
     border: 1px solid var(--border-card);
     border-radius: 9999px;
     padding: 3px 6px;
-    gap: 4px;
+    gap: 3px;
 }
 
 .header-theme-pill span {
     font-size: 13px;
-    padding: 2px 6px;
-    border-radius: 50%;
+    padding: 2px 7px;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .header-theme-pill span.active {
@@ -347,7 +347,7 @@ html, body, [class*="css"] {
     background: #ecfdf5;
     border: 1px solid #a7f3d0;
     color: #065f46;
-    padding: 4px 12px;
+    padding: 4px 13px;
     border-radius: 9999px;
     font-size: 0.78rem;
     font-weight: 600;
@@ -369,7 +369,7 @@ html, body, [class*="css"] {
 }
 
 [data-testid="stSidebarContent"] {
-    padding: 1.2rem 1.1rem !important;
+    padding: 1rem 1.1rem !important;
 }
 
 .sb-nav-item {
@@ -399,7 +399,7 @@ html, body, [class*="css"] {
     margin-top: 14px;
     margin-bottom: 6px;
     border-top: 1px solid var(--border-subtle);
-    padding-top: 12px;
+    padding-top: 10px;
 }
 
 .sb-field-label {
@@ -409,22 +409,71 @@ html, body, [class*="css"] {
     font-size: 0.8rem;
     font-weight: 500;
     color: var(--text-dark);
-    margin-bottom: 4px;
+    margin-bottom: 3px;
 }
 
 /* iOS Green Toggle Switch */
+div[data-testid="stToggle"] {
+    margin-bottom: 2px !important;
+}
+div[data-testid="stToggle"] label {
+    font-size: 0.82rem !important;
+    color: var(--text-dark) !important;
+}
 div[data-testid="stToggle"] input:checked ~ div {
     background-color: var(--green-dot) !important;
 }
 
-/* Teal Sliders */
-[data-testid="stSlider"] > div > div > div > div {
-    background: var(--primary) !important;
+/* ── Slim Elegant Sliders (Fixes solid block bug) ── */
+[data-testid="stSlider"] {
+    margin-top: -4px !important;
+    margin-bottom: 6px !important;
 }
 
-[data-testid="stSlider"] [data-baseweb="slider"] div[role="slider"] {
+[data-testid="stSlider"] > div {
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+[data-testid="stSlider"] > div > div {
+    background: transparent !important;
+}
+
+[data-testid="stSlider"] [data-baseweb="slider"] {
+    background: transparent !important;
+    padding: 6px 0 !important;
+}
+
+/* Base track line: 3px light slate */
+[data-testid="stSlider"] [data-baseweb="slider"] > div {
+    height: 3px !important;
+    background: #e2e8f0 !important;
+    border-radius: 9999px !important;
+}
+
+/* Filled track line: teal */
+[data-testid="stSlider"] [data-baseweb="slider"] > div > div {
     background: var(--primary) !important;
-    border-color: var(--primary) !important;
+    height: 3px !important;
+    border-radius: 9999px !important;
+}
+
+/* Round Slider Knob */
+[data-testid="stSlider"] [role="slider"] {
+    width: 14px !important;
+    height: 14px !important;
+    background-color: var(--primary) !important;
+    border: 2px solid #ffffff !important;
+    border-radius: 50% !important;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25) !important;
+    transform: translateY(0) !important;
+    cursor: pointer !important;
+    outline: none !important;
+}
+
+/* Hide Streamlit min/max ticks beneath track */
+[data-testid="stSlider"] [data-baseweb="slider"] + div {
+    display: none !important;
 }
 
 /* Custom Select Dropdowns */
@@ -436,27 +485,33 @@ div[data-testid="stToggle"] input:checked ~ div {
     color: var(--text-dark) !important;
 }
 
-/* ── Panel Cards (Input & Output) ── */
-.panel-card-outer {
-    background: var(--bg-card);
-    border: 1px solid var(--border-card);
-    border-radius: var(--radius-card);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-    overflow: hidden;
-    margin-bottom: 1rem;
+/* ── Main Unified Two-Column Cards ── */
+.block-container > div > div > div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+    background: #ffffff !important;
+    border: 1px solid var(--border-card) !important;
+    border-radius: var(--radius-card) !important;
+    padding: 24px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03) !important;
+    min-height: 680px !important;
+    display: flex !important;
+    flex-direction: column !important;
 }
 
-.panel-header-custom {
-    padding: 14px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--border-card);
+/* Reset nested horizontal block columns (e.g. sample thumbnails, stats) */
+div[data-testid="column"] div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    min-height: auto !important;
+    display: block !important;
 }
 
+/* Panel Header Elements */
 .panel-badge-icon {
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     background: var(--primary-light);
     border-radius: 8px;
     display: flex;
@@ -467,14 +522,14 @@ div[data-testid="stToggle"] input:checked ~ div {
 }
 
 .panel-title-text {
-    font-size: 0.95rem;
+    font-size: 0.98rem;
     font-weight: 700;
     color: var(--text-dark);
     line-height: 1.15;
 }
 
 .panel-subtitle-text {
-    font-size: 0.74rem;
+    font-size: 0.75rem;
     color: var(--text-muted);
 }
 
@@ -484,49 +539,54 @@ div[data-testid="stToggle"] input:checked ~ div {
     letter-spacing: 0.02em;
 }
 
-/* ── Dashed Dropzone ── */
-.custom-dropzone {
-    border: 1.5px dashed var(--primary-brdr);
-    background: var(--primary-surf);
-    border-radius: 12px;
-    padding: 30px 20px;
-    text-align: center;
-    margin-bottom: 14px;
+/* ── Streamlit File Uploader Styled as Mint Dashed Dropzone ── */
+[data-testid="stFileUploader"] {
+    margin-bottom: 14px !important;
 }
 
-.dropzone-prompt-text {
-    font-size: 0.98rem;
-    font-weight: 600;
-    color: var(--text-dark);
-    margin-top: 8px;
-    margin-bottom: 2px;
+[data-testid="stFileUploadDropzone"] {
+    background-color: var(--primary-surf) !important;
+    border: 1.5px dashed var(--primary-brdr) !important;
+    border-radius: 14px !important;
+    padding: 28px 16px !important;
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    transition: all 0.2s ease !important;
 }
 
-.dropzone-sub-text {
-    font-size: 0.78rem;
-    color: var(--text-muted);
-    margin-bottom: 12px;
+[data-testid="stFileUploadDropzone"]:hover {
+    border-color: var(--primary) !important;
+    background-color: #e6fdf9 !important;
 }
 
-.btn-fake-choose {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    padding: 6px 16px;
-    font-size: 0.82rem;
-    font-weight: 500;
-    color: var(--text-dark);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+[data-testid="stFileUploadDropzone"] svg {
+    color: var(--primary) !important;
+    stroke: var(--primary) !important;
+    width: 38px !important;
+    height: 38px !important;
+}
+
+[data-testid="stFileUploadDropzone"] button {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    color: var(--text-dark) !important;
+    border-radius: 8px !important;
+    padding: 6px 18px !important;
+    font-size: 0.84rem !important;
+    font-weight: 500 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
 }
 
 /* ── "Or try a sample" Row ── */
 .samples-row-title {
-    font-size: 0.8rem;
-    font-weight: 500;
+    font-size: 0.82rem;
+    font-weight: 600;
     color: var(--text-dark);
+    margin-top: 10px;
     margin-bottom: 8px;
 }
 
@@ -535,9 +595,11 @@ div[data-testid="stToggle"] input:checked ~ div {
     border: 1.5px solid var(--border-card);
     border-radius: 8px;
     padding: 2px;
-    background: #f8fafc;
+    background: #ffffff;
     aspect-ratio: 4/5;
     overflow: visible;
+    margin-bottom: 6px;
+    transition: all 0.15s ease;
 }
 
 .sample-thumbnail-card.active {
@@ -545,10 +607,18 @@ div[data-testid="stToggle"] input:checked ~ div {
     box-shadow: 0 0 0 1px var(--primary);
 }
 
+.sample-thumbnail-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+    display: block;
+}
+
 .sample-badge-check {
     position: absolute;
-    top: -5px;
-    right: -5px;
+    top: -6px;
+    right: -6px;
     width: 18px;
     height: 18px;
     border-radius: 50%;
@@ -560,22 +630,41 @@ div[data-testid="stToggle"] input:checked ~ div {
     font-size: 11px;
     font-weight: 700;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    z-index: 5;
+    z-index: 10;
+}
+
+/* Sample selection buttons below thumbnail */
+div[data-testid="column"] button[key*="s_btn_"] {
+    background: #f8fafc !important;
+    border: 1px solid var(--border-card) !important;
+    color: var(--text-sub) !important;
+    border-radius: 6px !important;
+    font-size: 0.78rem !important;
+    font-weight: 600 !important;
+    padding: 2px 0 !important;
+    min-height: 28px !important;
+    line-height: 1 !important;
+}
+
+div[data-testid="column"] button[key*="s_btn_"]:hover {
+    border-color: var(--primary) !important;
+    color: var(--primary) !important;
+    background: var(--primary-surf) !important;
 }
 
 /* ── Pro Tips Card ── */
 .custom-protips-box {
-    background: #f0fdf9;
-    border: 1px solid #d1fae5;
-    border-radius: 10px;
-    padding: 13px 16px;
+    background: var(--primary-surf);
+    border: 1px solid #ccfbf1;
+    border-radius: 12px;
+    padding: 14px 18px;
     margin-top: 14px;
 }
 
 .protips-title-row {
     font-size: 0.85rem;
     font-weight: 700;
-    color: #065f46;
+    color: #0f766e;
     display: flex;
     align-items: center;
     gap: 6px;
@@ -586,7 +675,7 @@ div[data-testid="stToggle"] input:checked ~ div {
     margin: 0;
     padding-left: 14px;
     font-size: 0.77rem;
-    color: #047857;
+    color: #0d9488;
     line-height: 1.6;
 }
 
@@ -597,19 +686,20 @@ div[data-testid="stToggle"] input:checked ~ div {
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 70px 20px;
+    padding: 80px 20px;
+    margin: auto 0;
 }
 
 .empty-headline {
     font-size: 1.05rem;
     font-weight: 700;
     color: var(--text-dark);
-    margin-top: 16px;
-    margin-bottom: 4px;
+    margin-top: 18px;
+    margin-bottom: 6px;
 }
 
 .empty-caption {
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     color: var(--text-muted);
     max-width: 320px;
     line-height: 1.5;
@@ -620,13 +710,14 @@ div.btn-extract-gradient > button {
     width: 100% !important;
     background: linear-gradient(135deg, #10b981 0%, #0d9488 50%, #0f766e 100%) !important;
     border: none !important;
-    border-radius: 9px !important;
-    padding: 10px 16px !important;
+    border-radius: 10px !important;
+    padding: 12px 18px !important;
     color: #ffffff !important;
-    font-size: 0.88rem !important;
+    font-size: 0.92rem !important;
     font-weight: 600 !important;
     box-shadow: 0 4px 14px rgba(13, 148, 136, 0.32) !important;
     transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+    cursor: pointer !important;
 }
 
 div.btn-extract-gradient > button:hover {
@@ -1106,11 +1197,11 @@ st.markdown("""
             <div class="header-brand-sub">Extract text from images &amp; documents</div>
         </div>
     </div>
-    # <div class="header-right-actions">
-    #     <div class="header-theme-pill">
-    #         <span class="active">☀️</span>
-    #         <span>🌙</span>
-    #     </div>
+    <div class="header-right-actions">
+        <div class="header-theme-pill">
+            <span class="active">☀️</span>
+            <span>🌙</span>
+        </div>
         <div class="header-status-pill">
             <span class="status-dot"></span>
             <span>Ready</span>
@@ -1134,40 +1225,19 @@ if "selected_sample" not in st.session_state:
 # ────────────────────────────────────────
 with col_left:
     st.markdown("""
-    <div class="panel-card-outer">
-        <div class="panel-header-custom">
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <div class="panel-badge-icon">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-                </div>
-                <div>
-                    <div class="panel-title-text">Input</div>
-                    <div class="panel-subtitle-text">Upload an image or PDF file</div>
-                </div>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <div class="panel-badge-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
             </div>
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <span class="formats-tag">JPG · PNG · BMP · TIFF · PDF</span>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="m8 16 4-4 4 4"></path></svg>
+            <div>
+                <div class="panel-title-text">Input</div>
+                <div class="panel-subtitle-text">Upload an image or PDF file</div>
             </div>
         </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # Dashed Dropzone prompt
-    st.markdown("""
-    <div class="custom-dropzone">
-        <div class="cloud-icon-art">
-            <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#00897b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path>
-                <path d="M12 12v9"></path>
-                <path d="m8 16 4-4 4 4"></path>
-            </svg>
-        </div>
-        <div class="dropzone-prompt-text">Drag and drop your file here</div>
-        <div class="dropzone-sub-text">or click to browse</div>
-        <div class="btn-fake-choose">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-            Choose File
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="formats-tag">JPG · PNG · BMP · TIFF · PDF</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="m8 16 4-4 4 4"></path></svg>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -1195,12 +1265,13 @@ with col_left:
             b64_thumb = get_base64_image(SAMPLES_DATA[idx]["thumb"])
             badge_html = '<div class="sample-badge-check">✓</div>' if is_active else ''
             active_cls = " active" if is_active else ""
-            st.markdown(f"""
-            <div class="sample-thumbnail-card{active_cls}">
-                {badge_html}
-                <img src="{b64_thumb}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;display:block;">
-            </div>
-            """, unsafe_allow_html=True)
+            thumb_html = (
+                f'<div class="sample-thumbnail-card{active_cls}">'
+                f'{badge_html}'
+                f'<img src="{b64_thumb}" alt="Sample {idx}">'
+                f'</div>'
+            )
+            st.markdown(thumb_html, unsafe_allow_html=True)
             if st.button(f"#{idx}", key=f"s_btn_{idx}", use_container_width=True):
                 st.session_state["selected_sample"] = idx
                 st.session_state.pop("ocr_text", None)
@@ -1256,35 +1327,32 @@ with col_left:
 #  RIGHT — OUTPUT PANEL
 # ────────────────────────────────────────
 with col_right:
-    st.markdown("""
-    <div class="panel-card-outer">
-        <div class="panel-header-custom">
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <div class="panel-badge-icon">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M16 13H8"></path><path d="M16 17H8"></path><path d="M10 9H8"></path></svg>
-                </div>
-                <div>
-                    <div class="panel-title-text">Output</div>
-                    <div class="panel-subtitle-text">Extracted text will appear here</div>
-                </div>
+    out_h1, out_h2 = st.columns([1.8, 1.2])
+    with out_h1:
+        st.markdown("""
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+            <div class="panel-badge-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M16 13H8"></path><path d="M16 17H8"></path><path d="M10 9H8"></path></svg>
             </div>
             <div>
-    """, unsafe_allow_html=True)
-
-    # Download TXT button in header
-    txt_to_download = st.session_state.get("ocr_text", "")
-    if txt_to_download:
-        st.download_button(
-            "📥 Download TXT",
-            data=txt_to_download.encode("utf-8"),
-            file_name="ocr_output.txt",
-            mime="text/plain",
-            use_container_width=True
-        )
-    else:
-        st.button("📥 Download TXT", disabled=True, use_container_width=True)
-
-    st.markdown("</div></div></div>", unsafe_allow_html=True)
+                <div class="panel-title-text">Output</div>
+                <div class="panel-subtitle-text">Extracted text will appear here</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    with out_h2:
+        txt_to_download = st.session_state.get("ocr_text", "")
+        if txt_to_download:
+            st.download_button(
+                "📥 Download TXT",
+                data=txt_to_download.encode("utf-8"),
+                file_name="ocr_output.txt",
+                mime="text/plain",
+                use_container_width=True,
+                key="btn_dl_txt_hdr"
+            )
+        else:
+            st.button("📥 Download TXT", disabled=True, use_container_width=True, key="btn_dl_txt_hdr_dis")
 
     # Trigger OCR Execution
     if _sb_extract and active_img is not None:
