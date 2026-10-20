@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OCR Studio — Extract text from images & documents</title>
+  <meta name="description" content="High-accuracy optical character recognition (OCR) application for extracting clean text from images and PDF documents.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- ══════════════════════════════════════════
+         TOP APP HEADER
+    ══════════════════════════════════════════ -->
+    <header class="app-header">
+      <div class="brand-group">
+        <div class="brand-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 8V6a2 2 0 0 1 2-2h2"></path>
+            <path d="M4 16v2a2 2 0 0 0 2 2h2"></path>
+            <path d="M16 4h2a2 2 0 0 1 2 2v2"></path>
+            <path d="M16 20h2a2 2 0 0 0 2-2v-2"></path>
+            <circle cx="12" cy="12" r="3.2"></circle>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1 class="brand-title">OCR Studio</h1>
+          <p class="brand-subtitle">Extract text from images &amp; documents</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Theme Switcher Pill -->
+        <div class="theme-pill" id="themeToggle" role="button" tabindex="0" title="Toggle color theme" aria-label="Toggle theme">
+          <span class="theme-option active" id="themeLight" aria-label="Light mode">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2"></path>
+              <path d="M12 20v2"></path>
+              <path d="m4.93 4.93 1.41 1.41"></path>
+              <path d="m17.66 17.66 1.41 1.41"></path>
+              <path d="M2 12h2"></path>
+              <path d="M20 12h2"></path>
+              <path d="m6.34 17.66-1.41 1.41"></path>
+              <path d="m19.07 4.93-1.41 1.41"></path>
+            </svg>
+          </span>
+          <span class="theme-option" id="themeDark" aria-label="Dark mode">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+            </svg>
+          </span>
+        </div>
+
+        <!-- Status Badge -->
+        <div class="status-badge" id="systemStatus">
+          <span class="status-dot"></span>
+          <span class="status-label">Ready</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ══════════════════════════════════════════
+         MAIN WORKSPACE CONTAINER
+    ══════════════════════════════════════════ -->
+    <div class="workspace-body">
+      <!-- ── SIDEBAR ── -->
+      <aside class="sidebar" id="sidebarPanel">
+        <!-- Nav Menu -->
+        <nav class="sidebar-nav" aria-label="Main Navigation">
+          <a href="#" class="nav-item active" id="navStudio">
+            <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            <span>OCR Studio</span>
+          </a>
+          <a href="#" class="nav-item" id="navHistory">
+            <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span>History</span>
+          </a>
+          <a href="#" class="nav-item" id="navSettings">
+            <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+            <span>Settings</span>
+          </a>
+        </nav>
+
+        <!-- PROCESSING OPTIONS -->
+        <div class="sidebar-section">
+          <div class="section-title">PROCESSING OPTIONS</div>
+
+          <!-- Document Type Accordion / Select -->
+          <div class="option-group">
+            <div class="select-label-row">
+              <div class="label-left">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+                <span>Document Type</span>
+              </div>
+              <svg class="chevron-toggle" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="18 15 12 9 6 15"></polyline>
+              </svg>
+            </div>
+            <div class="custom-select-wrap">
+              <select id="docTypeSelect" class="custom-select">
+                <option value="all">Image / PDF</option>
+                <option value="image">Image Only (PNG, JPG, TIFF)</option>
+                <option value="pdf">Multi-page PDF Document</option>
+              </select>
+              <svg class="select-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Binarization Mode -->
+          <div class="option-group">
+            <div class="select-label-row">
+              <div class="label-left">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                  <polyline points="21 15 16 10 5 21"></polyline>
+                </svg>
+                <span>Binarization Mode</span>
+              </div>
+            </div>
+            <div class="custom-select-wrap">
+              <select id="binarizeSelect" class="custom-select">
+                <option value="adaptive" selected>Adaptive Threshold</option>
+                <option value="clahe">CLAHE + Otsu</option>
+                <option value="otsu">Otsu Binarize</option>
+                <option value="grayscale">Grayscale</option>
+                <option value="sharpen">Sharpen</option>
+                <option value="original">Original (No Filter)</option>
+              </select>
+              <svg class="select-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Sliders -->
+          <div class="slider-group">
+            <!-- Brightness -->
+            <div class="slider-item">
+              <div class="slider-header">
+                <div class="slider-title">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="4"></circle>
+                    <path d="M12 2v2"></path>
+                    <path d="M12 20v2"></path>
+                    <path d="m4.93 4.93 1.41 1.41"></path>
+                    <path d="m17.66 17.66 1.41 1.41"></path>
+                    <path d="M2 12h2"></path>
+                    <path d="M20 12h2"></path>
+                    <path d="m6.34 17.66-1.41 1.41"></path>
+                    <path d="m19.07 4.93-1.41 1.41"></path>
+                  </svg>
+                  <span>Brightness</span>
+                </div>
+                <span class="slider-val" id="valBrightness">1.00</span>
+              </div>
+              <input type="range" id="rangeBrightness" min="0.50" max="2.00" step="0.05" value="1.00" class="teal-range">
+            </div>
+
+            <!-- Sharpness -->
+            <div class="slider-item">
+              <div class="slider-header">
+                <div class="slider-title">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="12 2 22 22 2 22"></polygon>
+                  </svg>
+                  <span>Sharpness</span>
+                </div>
+                <span class="slider-val" id="valSharpness">1.20</span>
+              </div>
+              <input type="range" id="rangeSharpness" min="0.50" max="3.00" step="0.05" value="1.20" class="teal-range">
+            </div>
+
+            <!-- Contrast -->
+            <div class="slider-item">
+              <div class="slider-header">
+                <div class="slider-title">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M12 2a10 10 0 0 1 0 20Z" fill="currentColor"></path>
+                  </svg>
+                  <span>Contrast</span>
+                </div>
+                <span class="slider-val" id="valContrast">1.30</span>
+              </div>
+              <input type="range" id="rangeContrast" min="0.50" max="3.00" step="0.05" value="1.30" class="teal-range">
+            </div>
+          </div>
+
+          <!-- Feature Toggles -->
+          <div class="toggles-group">
+            <!-- Denoise -->
+            <div class="toggle-row">
+              <div class="toggle-left">
+                <svg class="check-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                <span class="toggle-name">Denoise</span>
+                <span class="tooltip-trigger" title="Remove scanner grain and camera sensor noise via bilateral filter">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                  </svg>
+                </span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="toggleDenoise" checked>
+                <span class="slider round"></span>
+              </label>
+            </div>
+
+            <!-- Deskew -->
+            <div class="toggle-row">
+              <div class="toggle-left">
+                <svg class="check-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                <span class="toggle-name">Deskew</span>
+                <span class="tooltip-trigger" title="Automatically detect tilt angle via Hough line transform and straighten text">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                  </svg>
+                </span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="toggleDeskew" checked>
+                <span class="slider round"></span>
+              </label>
+            </div>
+
+            <!-- Upscale -->
+            <div class="toggle-row">
+              <div class="toggle-left">
+                <svg class="check-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                <span class="toggle-name">Upscale</span>
+                <span class="tooltip-trigger" title="Upscale low-resolution scans using Lanczos interpolation to 300+ DPI equivalent">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                  </svg>
+                </span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="toggleUpscale">
+                <span class="slider round"></span>
+              </label>
+            </div>
+
+            <!-- Morphological Clean -->
+            <div class="toggle-row">
+              <div class="toggle-left">
+                <svg class="info-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span class="toggle-name">Morphological Clean</span>
+                <span class="tooltip-trigger" title="Morphological close/open filter to bridge disconnected strokes and eliminate isolated specs">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                  </svg>
+                </span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="toggleMorph">
+                <span class="slider round"></span>
+              </label>
+            </div>
+
+            <!-- Remove Small Objects -->
+            <div class="toggle-row">
+              <div class="toggle-left">
+                <svg class="info-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span class="toggle-name">Remove Small Objects</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="toggleRemoveObjects">
+                <span class="slider round"></span>
+              </label>
+            </div>
+
+            <!-- Border Padding -->
+            <div class="toggle-row">
+              <div class="toggle-left">
+                <svg class="info-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span class="toggle-name">Border Padding</span>
+                <span class="tooltip-trigger" title="Pad image with a 30px white margin so text touching page edges is recognized reliably">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                  </svg>
+                </span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="toggleBorderPad">
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- TESSERACT ENGINE -->
+        <div class="sidebar-section">
+          <div class="section-title">TESSERACT ENGINE</div>
+
+          <div class="option-group">
+            <label class="compact-label" for="psmSelect">Page Segmentation (PSM)</label>
+            <div class="custom-select-wrap">
+              <select id="psmSelect" class="custom-select">
+                <option value="3" selected>3 — Fully automatic</option>
+                <option value="4">4 — Single column text</option>
+                <option value="6">6 — Uniform block of text</option>
+                <option value="7">7 — Single text line</option>
+                <option value="8">8 — Single word</option>
+                <option value="11">11 — Sparse text</option>
+                <option value="12">12 — Sparse text with OSD</option>
+              </select>
+              <svg class="select-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+          </div>
+
+          <div class="option-group">
+            <label class="compact-label" for="oemSelect">OCR Engine (OEM)</label>
+            <div class="custom-select-wrap">
+              <select id="oemSelect" class="custom-select">
+                <option value="3" selected>3 — LSTM + Legacy (best)</option>
+                <option value="1">1 — Neural nets LSTM only</option>
+                <option value="0">0 — Legacy Tesseract only</option>
+              </select>
+              <svg class="select-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Extract Text CTA Button -->
+        <div class="sidebar-footer">
+          <button type="button" class="btn-extract" id="btnExtract">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 7V4h16v3"></path>
+              <path d="M9 20h6"></path>
+              <path d="M12 4v16"></path>
+            </svg>
+            <span>Extract Text</span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- ── TWO-COLUMN MAIN CANVAS ── -->
+      <main class="main-content">
+        <!-- ── LEFT CARD: INPUT ── -->
+        <section class="panel-card input-panel" id="inputCard">
+          <header class="panel-card-header">
+            <div class="header-left">
+              <div class="panel-badge-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+              </div>
+              <div class="header-text">
+                <h2 class="panel-title">Input</h2>
+                <p class="panel-subtitle">Upload an image or PDF file</p>
+              </div>
+            </div>
+            <div class="header-right">
+              <span class="formats-pill">JPG · PNG · BMP · TIFF · PDF</span>
+              <svg class="cloud-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path>
+                <path d="M12 12v9"></path>
+                <path d="m8 16 4-4 4 4"></path>
+              </svg>
+            </div>
+          </header>
+
+          <div class="panel-card-body">
+            <!-- Hidden native file input -->
+            <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.bmp,.tiff,.tif,.pdf" class="sr-only">
+
+            <!-- Drag and Drop Dropzone -->
+            <div class="dropzone" id="dropZone" tabindex="0" role="button" aria-label="Upload document dropzone">
+              <!-- Active document preview overlay (hidden by default) -->
+              <div class="dropzone-preview" id="dropPreview" style="display: none;">
+                <img id="previewImg" src="" alt="Loaded document preview">
+                <div class="preview-meta">
+                  <span class="preview-filename" id="previewFilename">sample_1.png</span>
+                  <span class="preview-dim" id="previewDim">1200 × 1600 px · 99.2 KB</span>
+                  <button type="button" class="btn-change-file" id="btnChangeFile" title="Select a different file">Change File</button>
+                </div>
+              </div>
+
+              <!-- Default Dropzone Content -->
+              <div class="dropzone-idle" id="dropIdle">
+                <div class="cloud-upload-art">
+                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path>
+                    <path d="M12 12v9"></path>
+                    <path d="m8 16 4-4 4 4"></path>
+                  </svg>
+                </div>
+                <h3 class="dropzone-prompt">Drag and drop your file here</h3>
+                <p class="dropzone-sub">or click to browse</p>
+                <button type="button" class="btn-choose-file" id="btnBrowse">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                  </svg>
+                  <span>Choose File</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- "Or try a sample" Row -->
+            <div class="samples-section">
+              <span class="samples-label">Or try a sample</span>
+              <div class="samples-grid" role="radiogroup" aria-label="Sample documents">
+                <!-- Sample 1 (Default Selected) -->
+                <button type="button" class="sample-card active" data-sample="1" role="radio" aria-checked="true" title="Sample 1: Master Services Agreement">
+                  <img src="samples/thumb_clean_1.png" alt="Service Agreement Sample" loading="eager">
+                  <div class="check-badge" aria-hidden="true">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </div>
+                </button>
+
+                <!-- Sample 2 -->
+                <button type="button" class="sample-card" data-sample="2" role="radio" aria-checked="false" title="Sample 2: Skewed Packing Slip">
+                  <img src="samples/thumb_clean_2.png" alt="Skewed Document Sample" loading="lazy">
+                  <div class="check-badge" aria-hidden="true">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </div>
+                </button>
+
+                <!-- Sample 3 -->
+                <button type="button" class="sample-card" data-sample="3" role="radio" aria-checked="false" title="Sample 3: Clean Invoice with Table">
+                  <img src="samples/thumb_clean_3.png" alt="Invoice Sample" loading="lazy">
+                  <div class="check-badge" aria-hidden="true">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </div>
+                </button>
+
+                <!-- Sample 4 -->
+                <button type="button" class="sample-card" data-sample="4" role="radio" aria-checked="false" title="Sample 4: Engineering Sprint Notes">
+                  <img src="samples/thumb_clean_4.png" alt="Meeting Notes Sample" loading="lazy">
+                  <div class="check-badge" aria-hidden="true">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </div>
+                </button>
+
+                <!-- Sample 5 -->
+                <button type="button" class="sample-card" data-sample="5" role="radio" aria-checked="false" title="Sample 5: Public Parking Regulations Sign">
+                  <img src="samples/thumb_clean_5.png" alt="Signboard Sample" loading="lazy">
+                  <div class="check-badge" aria-hidden="true">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Pro Tips Callout Box -->
+            <div class="pro-tips-card">
+              <div class="pro-tips-header">
+                <span class="pro-tips-icon">💡</span>
+                <span class="pro-tips-title">Pro Tips</span>
+              </div>
+              <ul class="pro-tips-list">
+                <li>For best results, use high-quality images</li>
+                <li>Ensure good lighting and clear text</li>
+                <li>You can adjust settings in the left panel</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── RIGHT CARD: OUTPUT ── -->
+        <section class="panel-card output-panel" id="outputCard">
+          <header class="panel-card-header">
+            <div class="header-left">
+              <div class="panel-badge-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <path d="M16 13H8"></path>
+                  <path d="M16 17H8"></path>
+                  <path d="M10 9H8"></path>
+                </svg>
+              </div>
+              <div class="header-text">
+                <h2 class="panel-title">Output</h2>
+                <p class="panel-subtitle">Extracted text will appear here</p>
+              </div>
+            </div>
+            <div class="header-right">
+              <button type="button" class="btn-download-txt" id="btnDownloadTxt" disabled title="Download extracted text as .txt file">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span>Download TXT</span>
+              </button>
+            </div>
+          </header>
+
+          <div class="panel-card-body output-body">
+            <!-- Empty State Display -->
+            <div class="empty-state" id="emptyState">
+              <div class="empty-illustration" aria-hidden="true">
+                <svg width="68" height="78" viewBox="0 0 68 78" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Document Base -->
+                  <path d="M8 2C4.68629 2 2 4.68629 2 8V70C2 73.3137 4.68629 76 8 76H60C63.3137 76 66 73.3137 66 70V24.5C66 22.9087 65.3679 21.3826 64.2426 20.2574L47.7426 3.75736C46.6174 2.63214 45.0913 2 43.5 2H8Z" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round" fill="none"/>
+                  <!-- Fold Corner -->
+                  <path d="M44 2V18C44 21.3137 46.6863 24 50 24H66" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round"/>
+                  <!-- Text line placeholders -->
+                  <rect x="14" y="36" width="40" height="3.5" rx="1.75" fill="currentColor"/>
+                  <rect x="14" y="46" width="34" height="3.5" rx="1.75" fill="currentColor"/>
+                  <rect x="14" y="56" width="26" height="3.5" rx="1.75" fill="currentColor"/>
+                </svg>
+              </div>
+              <h3 class="empty-title">No text extracted yet</h3>
+              <p class="empty-sub">Upload a file and click &ldquo;Extract Text&rdquo; to see the result</p>
+            </div>
+
+            <!-- Scanning Progress Overlay (Hidden by default) -->
+            <div class="scanner-state" id="scannerState" style="display: none;">
+              <div class="scanner-laser"></div>
+              <div class="spinner-ring"></div>
+              <p class="scanner-msg" id="scannerMsg">Analyzing document contours and running LSTM OCR…</p>
+            </div>
+
+            <!-- Extracted Text State (Hidden by default) -->
+            <div class="results-state" id="resultsState" style="display: none;">
+              <!-- Quick Stats Banner -->
+              <div class="stats-row">
+                <div class="stat-pill">
+                  <span class="stat-num" id="statWords">142</span>
+                  <span class="stat-lbl">WORDS</span>
+                </div>
+                <div class="stat-pill">
+                  <span class="stat-num" id="statChars">984</span>
+                  <span class="stat-lbl">CHARS</span>
+                </div>
+                <div class="stat-pill">
+                  <span class="stat-num" id="statLines">24</span>
+                  <span class="stat-lbl">LINES</span>
+                </div>
+                <div class="stat-pill highlight">
+                  <span class="stat-num" id="statConf">98.7%</span>
+                  <span class="stat-lbl">CONFIDENCE</span>
+                </div>
+                <div class="stat-pill">
+                  <span class="stat-num" id="statTime">0.38s</span>
+                  <span class="stat-lbl">SPEED</span>
+                </div>
+              </div>
+
+              <!-- Result Actions Bar -->
+              <div class="result-actions-bar">
+                <span class="result-tag" id="resultStatusTag">Extraction Complete</span>
+                <div class="action-buttons-group">
+                  <button type="button" class="btn-tool" id="btnCopyText" title="Copy to clipboard">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <span>Copy</span>
+                  </button>
+                  <button type="button" class="btn-tool" id="btnDownloadMd" title="Download formatted markdown">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                      <polyline points="14 2 14 8 20 8"></polyline>
+                    </svg>
+                    <span>.MD</span>
+                  </button>
+                  <button type="button" class="btn-tool" id="btnToggleHeatmap" title="Toggle OCR word confidence visualization">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+                      <path d="M2 12h20"></path>
+                    </svg>
+                    <span>Heatmap</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Result Text Viewer -->
+              <div class="result-textarea-wrap">
+                <pre class="result-text-block" id="resultTextBlock"></pre>
+              </div>
+
+              <!-- Confidence Heatmap Display Container (Collapsible) -->
+              <div class="heatmap-container" id="heatmapContainer" style="display: none;">
+                <div class="heatmap-header">
+                  <span>Confidence Visualizer</span>
+                  <div class="heatmap-legend">
+                    <span class="legend-swatch high"></span> &ge;80%
+                    <span class="legend-swatch mid"></span> 50–79%
+                    <span class="legend-swatch low"></span> &lt;50%
+                  </div>
+                </div>
+                <div class="heatmap-canvas-wrap">
+                  <img id="heatmapImg" src="" alt="OCR Confidence Heatmap">
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toastNotice" role="status" aria-live="polite">Text copied to clipboard</div>
+
+  <script src="app.js"></script>
+</body>
+</html>
