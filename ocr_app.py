@@ -1106,11 +1106,11 @@ st.markdown("""
             <div class="header-brand-sub">Extract text from images &amp; documents</div>
         </div>
     </div>
-    <div class="header-right-actions">
-        <div class="header-theme-pill">
-            <span class="active">☀️</span>
-            <span>🌙</span>
-        </div>
+    # <div class="header-right-actions">
+    #     <div class="header-theme-pill">
+    #         <span class="active">☀️</span>
+    #         <span>🌙</span>
+    #     </div>
         <div class="header-status-pill">
             <span class="status-dot"></span>
             <span>Ready</span>
