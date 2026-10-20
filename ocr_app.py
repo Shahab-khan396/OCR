@@ -14,19 +14,91 @@ import time
 import os
 import re
 import unicodedata
+import shutil
 from pdf2image import convert_from_bytes
 
 # ╔══════════════════════════════════════════════════════════════╗
-# ║                    PATH CONFIGURATION                        ║
-# ║  Edit these two lines to match your system                   ║
+# ║        PATH CONFIGURATION & AUTO-DETECTION                   ║
+# ║  Supports Streamlit Cloud (Linux), Docker, macOS & Windows   ║
 # ╚══════════════════════════════════════════════════════════════╝
 
-# Tesseract executable — run `where tesseract` in CMD to find yours
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+def detect_tesseract_binary():
+    """Detect Tesseract executable across Linux, macOS, and Windows."""
+    # 1. Custom environment variable override
+    env_path = os.environ.get("TESSERACT_CMD")
+    if env_path and os.path.isfile(env_path):
+        return env_path
 
-# Poppler bin folder — download from:
-# https://github.com/oschwartz10612/poppler-windows/releases
-POPPLER_PATH = r"C:\poppler\Library\bin"
+    # 2. System PATH (standard for Streamlit Cloud Linux, Docker, macOS, or Windows with PATH configured)
+    which_path = shutil.which("tesseract")
+    if which_path:
+        return which_path
+
+    # 3. Standard Windows installation paths
+    windows_paths = [
+        r"C:\Program Files\Tesseract-OCR\tesseract.exe",
+        r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
+        os.path.expanduser(r"~\AppData\Local\Programs\Tesseract-OCR\tesseract.exe"),
+    ]
+    for p in windows_paths:
+        if os.path.isfile(p):
+            return p
+
+    # 4. Standard Linux / Unix installation paths
+    unix_paths = [
+        "/usr/bin/tesseract",
+        "/usr/local/bin/tesseract",
+        "/opt/homebrew/bin/tesseract",
+    ]
+    for p in unix_paths:
+        if os.path.isfile(p):
+            return p
+
+    return "tesseract"
+
+
+def detect_poppler_path():
+    """
+    Find Poppler bin directory if needed.
+    Returns None if poppler binaries (pdfinfo/pdftoppm) are in system PATH
+    (standard on Streamlit Cloud Linux and modern Linux/macOS installs).
+    Returns directory path if found in custom Windows install path or env var.
+    """
+    # 1. If poppler utilities are already in PATH
+    if shutil.which("pdfinfo") or shutil.which("pdftoppm"):
+        return None
+
+    # 2. Environment variable override
+    env_path = os.environ.get("POPPLER_PATH")
+    if env_path and os.path.isdir(env_path):
+        return env_path
+
+    # 3. Standard Windows poppler extract paths
+    windows_paths = [
+        r"C:\poppler\Library\bin",
+        r"C:\Program Files\poppler\Library\bin",
+        r"C:\Program Files\poppler\bin",
+        r"C:\poppler-24.08.0\Library\bin",
+        r"C:\poppler-24.07.0\Library\bin",
+        r"C:\poppler-24.02.0\Library\bin",
+        r"C:\poppler-23.11.0\Library\bin",
+    ]
+    for p in windows_paths:
+        if os.path.isdir(p):
+            if (os.path.isfile(os.path.join(p, "pdfinfo.exe")) or
+                os.path.isfile(os.path.join(p, "pdftoppm.exe")) or
+                os.path.isfile(os.path.join(p, "pdfinfo"))):
+                return p
+
+    return None
+
+# Configure pytesseract path
+_detected_tess = detect_tesseract_binary()
+if _detected_tess:
+    pytesseract.pytesseract.tesseract_cmd = _detected_tess
+
+# Configure poppler path
+POPPLER_PATH = detect_poppler_path()
 
 # ─────────────────────────────────────────────────────────────────
 # PAGE CONFIG
@@ -308,8 +380,15 @@ def check_tesseract():
         return False, str(e)
 
 def check_poppler():
-    exe = os.path.join(POPPLER_PATH, "pdfinfo.exe")
-    return os.path.isfile(exe)
+    # If poppler utilities are in system PATH (Linux / Streamlit Cloud)
+    if shutil.which("pdfinfo") or shutil.which("pdftoppm"):
+        return True
+    # If custom POPPLER_PATH was detected or configured
+    if POPPLER_PATH and os.path.isdir(POPPLER_PATH):
+        for candidate in ["pdfinfo.exe", "pdfinfo", "pdftoppm.exe", "pdftoppm"]:
+            if os.path.isfile(os.path.join(POPPLER_PATH, candidate)):
+                return True
+    return False
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -658,9 +737,9 @@ with st.sidebar:
     p_badge = '<span class="badge badge-ok">✓ Poppler ready</span>' if popp_ok else '<span class="badge" style="color:var(--orange);border-color:rgba(251,146,60,.3)">✗ PDF disabled</span>'
     st.markdown(f'<div style="display:flex;flex-direction:column;gap:5px;margin-bottom:0.5rem">{t_badge}{p_badge}</div>', unsafe_allow_html=True)
     if not tess_ok:
-        st.error("Fix `tesseract_cmd` path at top of ocr_app.py")
+        st.error("Tesseract not detected. For local use, install Tesseract OCR. For Streamlit Cloud, ensure `packages.txt` includes `tesseract-ocr`.")
     if not popp_ok:
-        st.warning("Fix `POPPLER_PATH` at top of ocr_app.py for PDF support")
+        st.warning("Poppler not detected. PDF conversion disabled. For local use, install Poppler. For Streamlit Cloud, ensure `packages.txt` includes `poppler-utils`.")
 
     # ── Preprocessing ──
     st.markdown('<div class="sb-sec">Preprocessing</div>', unsafe_allow_html=True)
@@ -786,7 +865,10 @@ with col_left:
         with st.spinner("Converting PDF → images..."):
             try:
                 raw = uploaded.read()
-                pdf_pages = convert_from_bytes(raw, dpi=pdf_dpi, poppler_path=POPPLER_PATH)
+                convert_kwargs = {"dpi": pdf_dpi}
+                if POPPLER_PATH:
+                    convert_kwargs["poppler_path"] = POPPLER_PATH
+                pdf_pages = convert_from_bytes(raw, **convert_kwargs)
                 st.session_state["pdf_pages"] = pdf_pages
                 st.success(f"{len(pdf_pages)} page(s) loaded at {pdf_dpi} DPI")
             except Exception as e:
@@ -839,7 +921,7 @@ with col_left:
     if uploaded and tess_ok:
         run_btn = st.button("⚡  Extract Text", use_container_width=True)
     elif uploaded and not tess_ok:
-        st.markdown('<div class="warn-box">Tesseract not found — set the path at the top of ocr_app.py</div>', unsafe_allow_html=True)
+        st.markdown('<div class="warn-box">Tesseract not detected — install Tesseract OCR or set system PATH / TESSERACT_CMD</div>', unsafe_allow_html=True)
         run_btn = False
     else:
         run_btn = False
